@@ -28,7 +28,7 @@
   ;;(displayln latest-id)
   (if (< latest-id (* 10 page)) (reverse (for/list ((i (range 0 (+ (- latest-id (* 10 (- page 1))) 1))))
                                            (car (rows-result-rows (query sql "SELECT * FROM POSTS WHERE ID=$1" i)))))
-      (reverse (for/list ((i (range (- latest-id (* 10 page)) (+ (- latest-id (* 10 (- page 1))) 1))))
+      (reverse (for/list ((i (range (+ (- latest-id (* 10 page)) 1) (+ (- latest-id (* 10 (- page 1))) 1))))
                  (car (rows-result-rows (query sql "SELECT * FROM POSTS WHERE ID=$1" i)))))))
 
 ;;单个帖子
