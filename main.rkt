@@ -3,6 +3,7 @@
 (require web-server/servlet)
 (require web-server/servlet-env)
 (require "db.rkt")
+(require "config.rkt")
 
 ;;(displayln (get-page-posts 1))
 
@@ -60,7 +61,7 @@
    (lambda (embed/url)
      (define body (append `(div ((class "container"))
                                 (br)
-                                (h1 (a ((href "/")) "朝色の2ch"))
+                                (h1 (a ((href "/")) ,site-title))
                                 (br)
                                 (form ((action
                                         ,(embed/url new-post)))
@@ -81,7 +82,7 @@
 
      ;;(displayln back)
 
-     (response/xexpr `(html (head (title "朝色の2ch")
+     (response/xexpr `(html (head (title ,site-title)
                                   ;; (mate ((charset "utf-8")))
                                   ;; (meta ((name "viewport") (content "width=device-width, initial-scale=1")))
                                   (link ((rel "stylesheet") (href "/bootstrap.css")))
@@ -89,7 +90,7 @@
                                  ,body)))))
 
 (serve/servlet main-server
-               #:port 8080
+               #:port server-port
                #:listen-ip "0.0.0.0"
                #:servlet-path "/"
                #:extra-files-paths (list
