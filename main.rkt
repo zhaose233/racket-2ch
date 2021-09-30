@@ -4,6 +4,7 @@
 (require web-server/servlet-env)
 (require "db.rkt")
 (require "config.rkt")
+(require "render.rkt")
 
 ;;(displayln (get-page-posts 1))
 
@@ -26,20 +27,12 @@
   (cond (n
          (for ((post (get-post n)));单个帖子
            (set! back (append back
-                              (list `(div ((class "card"))
-                                          (div ((class "card-body"))
-                                               (h5 ((class "card-title")) ,(vector-ref post 1))
-                                               (p ((class "card-text")) ,(vector-ref post 2))
-                                               (p ((class "card-text")) (small ,(vector-ref post 3))))))
+                              (list (render-post post))
                               '((br))))))
         (else
          (for ((post (get-page-posts p)))
            (set! back (append back
-                              (list `(div ((class "card"))
-                                          (div ((class "card-body"))
-                                               (h5 ((class "card-title")) (a ((href ,(format "/?n=~A" (vector-ref post 0))))  ,(vector-ref post 1)))
-                                               (p ((class "card-text")) ,(vector-ref post 2))
-                                               (p ((class "card-text")) (small ,(vector-ref post 3))))))
+                              (list (render-post post))
                               '((br)))))))
 
   ;;回调函数，用于增加帖子
@@ -54,7 +47,12 @@
         (set! words (cdr i))))
     (when (and (not (string=? name "")) (not (string=? words "")))
       (add-post name words))
-    (main-server (redirect/get)))
+    ;;(main-server (redirect/get)))
+    (response/full
+     303 #"See Other"
+     (current-seconds) TEXT/HTML-MIME-TYPE
+     (list (make-header #"Location" #"/"))
+     '()))
 
   ;;返回页面
   (send/suspend/dispatch
